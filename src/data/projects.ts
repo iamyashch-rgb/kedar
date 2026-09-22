@@ -1,0 +1,207 @@
+import type { Project } from '../types/project';
+import { CURATED_IMAGES } from '../config/image.config';
+
+export const PROJECTS_DATA: Project[] = [
+  {
+    id: 'prj-001',
+    title: 'Kedar Tower One',
+    location: 'Golf Course Road, Gurugram',
+    category: 'residential',
+    year: 2024,
+    status: 'completed',
+    yearStatus: 'DELIVERED 2024',
+    type: 'LUXURY HIGH-RISE',
+    description:
+      'A 45-story flagship architectural sky tower featuring 60 bespoke ultra-luxury residences, private plunge pools, triple-height travertine marble lobbies, and LEED Platinum sustainability rating.',
+    shortDescription: '45-Story flagship residential tower on Golf Course Road with 60 bespoke sky villas.',
+    fullDescription:
+      'Kedar Tower One represents the pinnacle of engineered structural luxury in National Capital Region. Built with C60 self-compacting concrete, post-tensioned floor slabs, and double-glazed low-E curtain walling, the tower achieves a 100-year structural design life. Amenities include a private helipad, 50m infinity sky pool, temperature-controlled wine cellars, and 24/7 concierge operations.',
+    images: [
+      CURATED_IMAGES.heroBg.url,
+      CURATED_IMAGES.interiorRenovation.url,
+      CURATED_IMAGES.luxuryVilla.url,
+    ],
+    image: CURATED_IMAGES.heroBg.url,
+    gallery: [
+      CURATED_IMAGES.heroBg.url,
+      CURATED_IMAGES.interiorRenovation.url,
+      CURATED_IMAGES.luxuryVilla.url,
+    ],
+    featured: true,
+    metrics: [
+      { label: 'BUILT-UP AREA', value: '4,50,000 SQ.FT' },
+      { label: 'RESIDENCES', value: '60 SKY VILLAS' },
+      { label: 'FLOOR COUNT', value: '45 FLOORS' },
+      { label: 'CERTIFICATION', value: 'LEED PLATINUM' },
+    ],
+    architect: 'Foster & Partners / Kedar Studio',
+    scope: [
+      'Turnkey Civil Construction & RCC Framing',
+      'Curtain Wall Glass Facade Glazing',
+      'MEP & FRLS Electrical Integration',
+      'Interior Fit-outs & Marble Atrium Joinery',
+    ],
+    aspectRatio: 'aspect-[4/5]',
+    columnSpan: 'col-span-1 lg:col-span-2',
+  },
+  {
+    id: 'prj-002',
+    title: 'BKC Financial Center',
+    location: 'Bandra Kurla Complex, Mumbai',
+    category: 'commercial',
+    year: 2023,
+    status: 'completed',
+    yearStatus: 'COMPLETED 2023',
+    type: 'GRADE-A CORPORATE PARK',
+    description:
+      'Grade-A corporate office tower delivering 8,50,000 sq.ft of IT/ITES office space pre-leased to Fortune 500 institutional tenants in BKC Mumbai.',
+    shortDescription: '8.5 Lakh sq.ft Grade-A commercial tower in BKC Mumbai with LEED Gold certification.',
+    fullDescription:
+      'Engineered for maximum floor-plate efficiency (85%), BKC Financial Center features 12-meter column-free spans, 24 high-speed destination-controlled elevators, double-skin acoustic glass facades, and automated building management systems (BMS). Integrated with 4-level deep basement parking holding 1,200 vehicles.',
+    images: [
+      CURATED_IMAGES.commercialHub.url,
+      CURATED_IMAGES.architecturalDrawing.url,
+    ],
+    image: CURATED_IMAGES.commercialHub.url,
+    gallery: [
+      CURATED_IMAGES.commercialHub.url,
+      CURATED_IMAGES.architecturalDrawing.url,
+    ],
+    featured: true,
+    metrics: [
+      { label: 'TOTAL SPACE', value: '8,50,000 SQ.FT' },
+      { label: 'FLOOR PLATE', value: '35,000 SQ.FT' },
+      { label: 'PARKING CAPACITY', value: '1,200 CARS' },
+      { label: 'ELEVATORS', value: '24 SMART UNITS' },
+    ],
+    architect: 'Hafeez Contractor / Kedar Properties',
+    scope: [
+      'Deep Foundation & Shoring Walls',
+      'Structural Steel & Composite Slabs',
+      'LEED Gold Energy Efficient HVAC',
+      'High-Street Retail Plaza Fit-out',
+    ],
+    aspectRatio: 'aspect-[16/9]',
+    columnSpan: 'col-span-1',
+  },
+  {
+    id: 'prj-003',
+    title: 'Yamuna Horizon Gated Township',
+    location: 'Yamuna Expressway, Greater Noida',
+    category: 'land',
+    year: 2025,
+    status: 'under-construction',
+    yearStatus: 'UNDER CONSTRUCTION (2025)',
+    type: 'MASTER-PLANNED TOWNSHIP',
+    description:
+      '120-Acre RERA-approved integrated plotted township featuring 450 freehold residential plots, 30m wide avenue roads, underground utility ducting, and 20 acres of central parks.',
+    shortDescription: '120-Acre master-planned residential township along Yamuna Expressway corridor.',
+    fullDescription:
+      'Yamuna Horizon is an urban master-planning benchmark located 15 minutes from the upcoming Noida International Airport. Execution covers site levelling, 30-meter asphalt avenues, underground 3-phase power feeders, rainwater harvesting networks, fiber-to-home telecom ducts, and 24/7 security boundary walls.',
+    images: [
+      CURATED_IMAGES.landPlot.url,
+      CURATED_IMAGES.heroBg.url,
+    ],
+    image: CURATED_IMAGES.landPlot.url,
+    gallery: [
+      CURATED_IMAGES.landPlot.url,
+      CURATED_IMAGES.heroBg.url,
+    ],
+    featured: true,
+    metrics: [
+      { label: 'TOTAL SITE AREA', value: '120 ACRES' },
+      { label: 'FREEHOLD PLOTS', value: '450 PARCELS' },
+      { label: 'GREEN COVER', value: '20 ACRE PARKS' },
+      { label: 'AIRPORT PROXIMITY', value: '15 MINUTES' },
+    ],
+    architect: 'Kedar Master-Planning Division',
+    scope: [
+      'Topographic Survey & Land Demarcation',
+      'Asphalt Road Network & Drainage Lines',
+      'Underground Electrical Substation',
+      'Perimeter Security & Gated Checkpoints',
+    ],
+    aspectRatio: 'aspect-[4/3]',
+    columnSpan: 'col-span-1',
+  },
+  {
+    id: 'prj-004',
+    title: 'Aravalli Valley Luxury Villas',
+    location: 'Sohna Road, Gurugram',
+    category: 'residential',
+    year: 2024,
+    status: 'completed',
+    yearStatus: 'DELIVERED 2024',
+    type: 'BOUTIQUE VILLA ESTATE',
+    description:
+      'Exclusive 32-villa gated sanctuary nestled at the base of the Aravalli hills, combining raw basalt stone, teak wood louvers, and private Infinity pools.',
+    shortDescription: 'Private estate of 32 luxury contour villas at the foot of Aravalli hills.',
+    fullDescription:
+      'Designed around natural contour gradients, each villa spans 5,500 sq.ft with 5 bedrooms, double-height courtyards, private temperature-controlled pools, and smart home automation. Complete zero-discharge ecological water recycling and solar power backup.',
+    images: [
+      CURATED_IMAGES.luxuryVilla.url,
+      CURATED_IMAGES.interiorRenovation.url,
+    ],
+    image: CURATED_IMAGES.luxuryVilla.url,
+    gallery: [
+      CURATED_IMAGES.luxuryVilla.url,
+      CURATED_IMAGES.interiorRenovation.url,
+    ],
+    featured: false,
+    metrics: [
+      { label: 'VILLA COUNT', value: '32 ESTATES' },
+      { label: 'VILLA SIZE', value: '5,500 SQ.FT' },
+      { label: 'SOLAR CAPACITY', value: '15 KW / VILLA' },
+      { label: 'LANDSCAPE', value: '70% OPEN GREEN' },
+    ],
+    architect: 'Morphogenesis / Kedar Studio',
+    scope: [
+      'Contour Retaining Engineering',
+      'Bespoke RCC & Basalt Masonry',
+      'Smart Home Automation Bus',
+      'Landscape & Swimming Pool Works',
+    ],
+    aspectRatio: 'aspect-[3/4]',
+    columnSpan: 'col-span-1',
+  },
+  {
+    id: 'prj-005',
+    title: 'Dehradun Hillside Estate',
+    location: 'Rajpur Road, Dehradun',
+    category: 'residential',
+    year: 2025,
+    status: 'under-construction',
+    yearStatus: 'HANDOVER 2025',
+    type: 'HILLSIDE CONTOUR ESTATES',
+    description:
+      'Seismic Zone IV compliant hillside luxury apartments and villas built on stepped slope foundations overlooking Mussoorie valley.',
+    shortDescription: 'Stepped hillside residential complex with Mussoorie valley views.',
+    fullDescription:
+      'Engineering excellence in hill terrain construction: micro-piles, soil nailing, reinforced earth walls, and lightweight steel-framed structures designed to withstand high seismic loads while maximizing natural daylight and ventilation.',
+    images: [
+      CURATED_IMAGES.heroBg.url,
+      CURATED_IMAGES.luxuryVilla.url,
+    ],
+    image: CURATED_IMAGES.heroBg.url,
+    gallery: [
+      CURATED_IMAGES.heroBg.url,
+      CURATED_IMAGES.luxuryVilla.url,
+    ],
+    featured: false,
+    metrics: [
+      { label: 'SITE ELEVATION', value: '+850m MSL' },
+      { label: 'SEISMIC ZONE', value: 'ZONE IV' },
+      { label: 'UNITS', value: '24 HOMES' },
+      { label: 'COMPLETION', value: 'Q3 2025' },
+    ],
+    architect: 'Kedar Structural Engineering',
+    scope: [
+      'Soil Nailing & Retaining Walls',
+      'Light Gauge Steel Framing',
+      'Thermal Insulated Wall Assemblies',
+      'Panoramic Balcony Decks',
+    ],
+    aspectRatio: 'aspect-[16/9]',
+    columnSpan: 'col-span-1 lg:col-span-2',
+  },
+];

@@ -1,0 +1,337 @@
+@import "tailwindcss";
+
+:root {
+  /* ==========================================================================
+     COLOR SYSTEM - Architectural Luxury Real Estate & Infrastructure
+     ========================================================================== */
+  
+  /* Near-Black Surfaces */
+  --color-bg-primary: #0A0A0C;
+  --color-bg-secondary: #121215;
+  --color-bg-tertiary: #18181C;
+  --color-bg-card: #141416;
+  --color-bg-card-hover: #1C1C20;
+  --color-bg-elevated: #1E1E22;
+  --color-bg-overlay: rgba(10, 10, 12, 0.92);
+
+  /* Warm Off-White Text & Details */
+  --color-text-primary: #F4F1EA;
+  --color-text-secondary: #C8C4BC;
+  --color-text-muted: #8C8A84;
+  --color-warm-white: #F9F8F5;
+  --color-off-white-muted: #E6E2D8;
+
+  /* Concrete Grey */
+  --color-concrete-light: #A3A099;
+  --color-concrete-mid: #6E6D68;
+  --color-concrete-dark: #383734;
+  --color-concrete-border: #2A2926;
+
+  /* Muted Stone Tones */
+  --color-stone-100: #EBE7DF;
+  --color-stone-300: #A8A297;
+  --color-stone-500: #78736A;
+  --color-stone-700: #3D3934;
+  --color-stone-800: #262523;
+  --color-stone-900: #191817;
+
+  /* Restrained Earthy Accent Color (Terracotta Sandstone) */
+  --color-earth-accent: #C26D47;
+  --color-earth-accent-hover: #D87A52;
+  --color-earth-accent-active: #AA5A37;
+  --color-earth-accent-muted: rgba(194, 109, 71, 0.15);
+  --color-earth-accent-subtle: #944D2E;
+  --color-earth-accent-light: #DE9371;
+  --color-earth-accent-border: rgba(194, 109, 71, 0.4);
+
+  /* Verification & RERA Status (Muted Sage/Stone) */
+  --color-status-verified: #3E8E6A;
+  --color-status-verified-bg: rgba(62, 142, 106, 0.12);
+
+  /* Borders & Hairlines */
+  --color-border-subtle: rgba(244, 241, 234, 0.08);
+  --color-border-medium: rgba(244, 241, 234, 0.16);
+  --color-border-stone: #262523;
+  --color-border-hover: rgba(194, 109, 71, 0.6);
+
+  /* Architectural Grid & Detail Overlay */
+  --color-grid-line: rgba(244, 241, 234, 0.06);
+  --color-grid-line-strong: rgba(244, 241, 234, 0.12);
+  --color-grid-dot: rgba(194, 109, 71, 0.4);
+
+  /* ==========================================================================
+     TYPOGRAPHY SYSTEM
+     ========================================================================== */
+  --font-heading: 'Syne', 'Cinzel', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Fluid Editorial Scale */
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);       /* 12px -> 14px */
+  --text-sm: clamp(0.875rem, 0.825rem + 0.25vw, 1rem);        /* 14px -> 16px */
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);       /* 16px -> 18px */
+  --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.25rem);      /* 18px -> 20px */
+  --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);        /* 20px -> 24px */
+  --text-2xl: clamp(1.5rem, 1.35rem + 0.75vw, 2.25rem);     /* 24px -> 36px */
+  --text-3xl: clamp(2rem, 1.75rem + 1.25vw, 3rem);          /* 32px -> 48px */
+  --text-4xl: clamp(2.75rem, 2.2rem + 2.5vw, 4.25rem);      /* 44px -> 68px */
+  --text-5xl: clamp(3.5rem, 2.8rem + 3.75vw, 5.75rem);      /* 56px -> 92px */
+  --text-6xl: clamp(4.5rem, 3.5rem + 5vw, 7.5rem);          /* 72px -> 120px */
+
+  /* Line Heights */
+  --leading-none: 1.0;
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.8;
+
+  /* Letter Spacing */
+  --tracking-tighter: -0.04em;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.05em;
+  --tracking-widest: 0.15em;
+
+  /* ==========================================================================
+     SPACING & LAYOUT SYSTEM
+     ========================================================================== */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-24: 6rem;     /* 96px */
+  --space-32: 8rem;     /* 128px */
+  --space-48: 12rem;    /* 192px */
+
+  /* Section Padding */
+  --space-section-y: clamp(5rem, 10vw, 10rem);
+  --space-section-x: clamp(1.5rem, 5vw, 4rem);
+
+  /* Container Widths */
+  --container-sm: 640px;
+  --container-md: 960px;
+  --container-lg: 1280px;
+  --container-xl: 1440px;
+  --container-wide: 1680px;
+
+  /* Architectural Sharp Corner Radii */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+
+  /* Transition Easing */
+  --ease-arch: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 150ms var(--ease-arch);
+  --transition-normal: 300ms var(--ease-arch);
+  --transition-slow: 600ms var(--ease-arch);
+}
+
+/* ==========================================================================
+   BASELINE & RESET
+   ========================================================================== */
+html {
+  scroll-behavior: auto;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: var(--leading-normal);
+}
+
+/* Mobile Input Auto-Zoom Reset for iOS Safari */
+@media (max-width: 767px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Touch-friendly target class */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Safe area inset helper */
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+/* Hide scrollbars for clean touch sliders */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* Precision Selection styling */
+::selection {
+  background-color: var(--color-earth-accent);
+  color: #FFFFFF;
+}
+
+/* Precision Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-stone-800);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-earth-accent);
+}
+
+/* ==========================================================================
+   ARCHITECTURAL GRID & UTILITIES
+   ========================================================================== */
+
+/* Background Grid Pattern */
+.arch-grid-bg {
+  background-size: 60px 60px;
+  background-image: 
+    linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid-line) 1px, transparent 1px);
+}
+
+.arch-grid-bg-dense {
+  background-size: 30px 30px;
+  background-image: 
+    linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid-line) 1px, transparent 1px);
+}
+
+/* Hairline Dividers */
+.arch-hairline {
+  height: 1px;
+  width: 100%;
+  background-color: var(--color-border-stone);
+}
+
+.arch-hairline-v {
+  width: 1px;
+  height: 100%;
+  background-color: var(--color-border-stone);
+}
+
+/* Architectural Crosshair Corner */
+.arch-corner-cross {
+  position: relative;
+}
+.arch-corner-cross::before {
+  content: '+';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--color-earth-accent);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Monospaced Section Index */
+.arch-num {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  color: var(--color-earth-accent);
+  text-transform: uppercase;
+}
+
+/* Architectural Focus State */
+.arch-focus:focus-visible {
+  outline: 2px solid var(--color-earth-accent);
+  outline-offset: 3px;
+}
+
+/* Editorial Hover Link */
+.arch-link-hover {
+  position: relative;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  transition: color var(--transition-fast);
+}
+.arch-link-hover::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-earth-accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--transition-normal);
+}
+.arch-link-hover:hover {
+  color: var(--color-text-primary);
+}
+.arch-link-hover:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Architectural Card Panel */
+.arch-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-stone);
+  transition: border-color var(--transition-normal), background-color var(--transition-normal), transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+.arch-card:hover {
+  border-color: var(--color-earth-accent-border);
+  background-color: var(--color-bg-card-hover);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 1px rgba(194, 109, 71, 0.3);
+}
+
+/* Architectural Glass Panel */
+.arch-glass-panel {
+  background-color: rgba(18, 18, 21, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border-stone);
+}
+
+/* Architectural Image Frame */
+.arch-image-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border-stone);
+}
+.arch-image-frame img {
+  transition: transform var(--transition-slow), filter var(--transition-slow);
+  filter: brightness(0.95) contrast(1.05);
+}
+.arch-image-frame:hover img {
+  transform: scale(1.04);
+  filter: brightness(1.02) contrast(1.08);
+}
+

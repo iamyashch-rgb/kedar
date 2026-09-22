@@ -1,0 +1,482 @@
+import React, { useState, useEffect } from 'react';
+import type { Property, PropertyCategory } from '../../types/property';
+import { dataService } from '../../services/dataService';
+import { AdminPropertyModal } from './AdminPropertyModal';
+import {
+  ShieldCheck,
+  Plus,
+  Search,
+  Edit2,
+  Trash2,
+  RotateCcw,
+  X,
+  Lock,
+  Unlock,
+  CheckCircle,
+  Filter,
+  Sparkles,
+} from 'lucide-react';
+
+interface AdminSectionProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const AdminSection: React.FC<AdminSectionProps> = ({ isOpen, onClose }) => {
+  const [pinInput, setPinInput] = useState<string>('');
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(false);
+  const [pinError, setPinError] = useState<boolean>(false);
+
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<PropertyCategory | 'ALL'>('ALL');
+
+  // Modal for Add / Edit
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+
+  // Confirm delete modal
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [notificationMsg, setNotificationMsg] = useState<string>('');
+
+  const DEFAULT_PIN = 'kedar@1234';
+
+  const loadData = async () => {
+    const list = await dataService.getProperties();
+    setProperties(list);
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      loadData();
+      const unsubscribe = dataService.subscribeToProperties(loadData);
+      return () => unsubscribe();
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleUnlockPin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pinInput === DEFAULT_PIN) {
+      setIsUnlocked(true);
+      setPinError(false);
+    } else {
+      setPinError(true);
+    }
+  };
+
+  const showToast = (msg: string) => {
+    setNotificationMsg(msg);
+    setTimeout(() => setNotificationMsg(''), 3500);
+  };
+
+  const handleOpenAddModal = () => {
+    setEditingProperty(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditModal = (prop: Property) => {
+    setEditingProperty(prop);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveProperty = async (data: Partial<Property>) => {
+    if (editingProperty) {
+      await dataService.updateProperty(editingProperty.id, data);
+      showToast(`Property "${data.title}" updated successfully.`);
+    } else {
+      await dataService.addProperty(data as Omit<Property, 'id'>);
+      showToast(`New property "${data.title}" added to website!`);
+    }
+    await loadData();
+  };
+
+  const handleDeleteProperty = async (id: string) => {
+    await dataService.deleteProperty(id);
+    setDeletingId(null);
+    showToast('Property deleted successfully.');
+    await loadData();
+  };
+
+  const handleToggleFeatured = async (prop: Property) => {
+    const nextState = !Boolean(prop.featured || prop.isFeatured);
+    await dataService.updateProperty(prop.id, {
+      featured: nextState,
+      isFeatured: nextState,
+    });
+    showToast(`Property ${nextState ? 'marked as featured' : 'unfeatured'}.`);
+    await loadData();
+  };
+
+  const handleResetDefaults = async () => {
+    if (window.confirm('Reset all property data to original default sample properties?')) {
+      await dataService.resetPropertiesToDefault();
+      showToast('All properties reset to original dataset.');
+      await loadData();
+    }
+  };
+
+  const filteredProperties = properties.filter((p) => {
+    const matchesCategory = selectedCategory === 'ALL' || p.category === selectedCategory;
+    const matchesSearch =
+      searchTerm.trim() === '' ||
+      p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.reraId && p.reraId.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      p.type.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  // Stats calculation
+  const totalCount = properties.length;
+  const apartmentsCount = properties.filter((p) => p.category === 'APARTMENTS').length;
+  const commercialCount = properties.filter((p) => p.category === 'COMMERCIAL').length;
+  const landCount = properties.filter((p) => p.category === 'LAND & PLOTS').length;
+  const featuredCount = properties.filter((p) => p.featured || p.isFeatured).length;
+
+  return (
+    <div className="fixed inset-0 z-[90] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-300">
+      
+      {/* Container Drawer */}
+      <div className="relative w-full max-w-6xl bg-[var(--color-bg-primary)] border border-[var(--color-earth-accent-border)] rounded-lg shadow-2xl overflow-hidden my-auto flex flex-col max-h-[92vh]">
+        
+        {/* Header Bar */}
+        <div className="p-4 sm:p-6 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-stone)] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-[var(--color-earth-accent)]/20 border border-[var(--color-earth-accent)] text-[var(--color-earth-accent)] rounded-[2px]">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] text-[var(--color-earth-accent)] font-bold uppercase tracking-widest">
+                  KEDAR PROPERTY // ENTERPRISE MANAGEMENT
+                </span>
+                <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[9px] rounded-[2px]">
+                  SECURE PORTAL
+                </span>
+              </div>
+              <h2 className="font-heading text-xl sm:text-2xl font-extrabold text-[var(--color-text-primary)] uppercase tracking-tight">
+                Property Inventory Control
+              </h2>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {isUnlocked && (
+              <button
+                onClick={handleOpenAddModal}
+                className="px-4 py-2 bg-[var(--color-earth-accent)] hover:bg-[var(--color-earth-accent)]/90 text-white font-mono text-xs font-bold rounded-[2px] shadow-lg transition-all duration-200 flex items-center gap-1.5 arch-focus cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline">ADD PROPERTY</span>
+              </button>
+            )}
+
+            <button
+              onClick={onClose}
+              className="p-2 text-[var(--color-concrete-light)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] rounded-[2px] transition-colors arch-focus cursor-pointer"
+              aria-label="Close admin section"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+
+        {/* Toast Notification */}
+        {notificationMsg && (
+          <div className="bg-emerald-500/15 border-b border-emerald-500/30 px-6 py-2.5 text-emerald-300 font-mono text-xs flex items-center justify-between animate-in slide-in-from-top duration-200 shrink-0">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-emerald-400" />
+              <span>{notificationMsg}</span>
+            </div>
+            <button onClick={() => setNotificationMsg('')} className="text-xs hover:underline">
+              DISMISS
+            </button>
+          </div>
+        )}
+
+        {/* UNLOCKED VIEW */}
+        {isUnlocked ? (
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 space-y-6">
+            
+            {/* Dashboard Stat Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4 font-mono">
+              <div className="p-3.5 bg-[var(--color-bg-tertiary)] border border-[var(--color-border-stone)] rounded-[2px]">
+                <span className="text-[10px] text-[var(--color-concrete-light)] uppercase tracking-wider block">TOTAL PROPERTIES</span>
+                <span className="text-2xl font-extrabold text-[var(--color-earth-accent)] mt-1 block">{totalCount}</span>
+              </div>
+              <div className="p-3.5 bg-[var(--color-bg-tertiary)] border border-[var(--color-border-stone)] rounded-[2px]">
+                <span className="text-[10px] text-[var(--color-concrete-light)] uppercase tracking-wider block">APARTMENTS</span>
+                <span className="text-2xl font-extrabold text-[var(--color-text-primary)] mt-1 block">{apartmentsCount}</span>
+              </div>
+              <div className="p-3.5 bg-[var(--color-bg-tertiary)] border border-[var(--color-border-stone)] rounded-[2px]">
+                <span className="text-[10px] text-[var(--color-concrete-light)] uppercase tracking-wider block">COMMERCIAL</span>
+                <span className="text-2xl font-extrabold text-[var(--color-text-primary)] mt-1 block">{commercialCount}</span>
+              </div>
+              <div className="p-3.5 bg-[var(--color-bg-tertiary)] border border-[var(--color-border-stone)] rounded-[2px]">
+                <span className="text-[10px] text-[var(--color-concrete-light)] uppercase tracking-wider block">LAND & PLOTS</span>
+                <span className="text-2xl font-extrabold text-[var(--color-text-primary)] mt-1 block">{landCount}</span>
+              </div>
+              <div className="p-3.5 bg-[var(--color-bg-tertiary)] border border-[var(--color-border-stone)] rounded-[2px]">
+                <span className="text-[10px] text-[var(--color-concrete-light)] uppercase tracking-wider block">FEATURED LISTINGS</span>
+                <span className="text-2xl font-extrabold text-amber-400 mt-1 block">{featuredCount}</span>
+              </div>
+            </div>
+
+            {/* Toolbar: Search & Category Filter */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border-stone)] rounded-[2px]">
+              
+              {/* Search Bar */}
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-[var(--color-concrete-light)] absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search by title, city, type or RERA ID..."
+                  className="w-full pl-9 pr-4 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-stone)] font-mono text-xs text-[var(--color-text-primary)] rounded-[2px] focus:border-[var(--color-earth-accent)] outline-none"
+                />
+              </div>
+
+              {/* Category Dropdown & Reset Action */}
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value as any)}
+                    className="px-3 py-2 pr-8 bg-[var(--color-bg-primary)] border border-[var(--color-border-stone)] font-mono text-xs text-[var(--color-text-primary)] rounded-[2px] focus:border-[var(--color-earth-accent)] outline-none appearance-none cursor-pointer"
+                  >
+                    <option value="ALL">ALL CATEGORIES</option>
+                    <option value="APARTMENTS">APARTMENTS</option>
+                    <option value="INDEPENDENT HOMES">INDEPENDENT HOMES</option>
+                    <option value="VILLAS">VILLAS</option>
+                    <option value="COMMERCIAL">COMMERCIAL</option>
+                    <option value="LAND & PLOTS">LAND & PLOTS</option>
+                  </select>
+                  <Filter className="w-3.5 h-3.5 text-[var(--color-concrete-light)] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+
+                <button
+                  onClick={handleResetDefaults}
+                  title="Reset properties data to default sample listings"
+                  className="px-3 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-stone)] hover:border-amber-500/50 text-[var(--color-text-secondary)] hover:text-amber-400 font-mono text-xs rounded-[2px] transition-colors flex items-center gap-1.5 arch-focus cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">RESET</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Properties Table / Data View */}
+            <div className="border border-[var(--color-border-stone)] rounded-[2px] overflow-hidden bg-[var(--color-bg-secondary)] font-mono text-xs">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border-stone)] text-[var(--color-concrete-light)] uppercase tracking-wider text-[11px]">
+                      <th className="p-3.5">PROPERTY</th>
+                      <th className="p-3.5">CATEGORY</th>
+                      <th className="p-3.5">PRICE</th>
+                      <th className="p-3.5">LOCATION</th>
+                      <th className="p-3.5">STATUS</th>
+                      <th className="p-3.5 text-right">ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--color-border-stone)]/50">
+                    {filteredProperties.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="p-8 text-center text-[var(--color-concrete-light)]">
+                          No properties found matching search parameters.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredProperties.map((prop) => (
+                        <tr
+                          key={prop.id}
+                          className="hover:bg-[var(--color-bg-tertiary)]/50 transition-colors group"
+                        >
+                          {/* Property Details */}
+                          <td className="p-3.5">
+                            <div className="flex items-center gap-3">
+                              <img
+                                src={prop.featuredImage || prop.images[0]}
+                                alt={prop.title}
+                                className="w-12 h-10 object-cover rounded-[2px] border border-[var(--color-border-stone)] shrink-0"
+                              />
+                              <div>
+                                <div className="font-heading font-bold text-sm text-[var(--color-text-primary)] flex items-center gap-1.5">
+                                  <span>{prop.title}</span>
+                                  {(prop.featured || prop.isFeatured) && (
+                                    <span className="px-1.5 py-0.2 bg-amber-500/20 text-amber-400 text-[9px] rounded-[1px] border border-amber-500/30">
+                                      FEATURED
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[10px] text-[var(--color-concrete-light)] mt-0.5">
+                                  {prop.type} • {prop.area} {prop.bedrooms ? `• ${prop.bedrooms} BHK` : ''}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Category */}
+                          <td className="p-3.5">
+                            <span className="px-2 py-1 bg-[var(--color-bg-primary)] border border-[var(--color-border-stone)] rounded-[2px] text-[10px] text-[var(--color-text-secondary)] uppercase">
+                              {prop.category}
+                            </span>
+                          </td>
+
+                          {/* Price */}
+                          <td className="p-3.5 font-bold text-[var(--color-earth-accent)]">
+                            {prop.priceDisplay}
+                          </td>
+
+                          {/* Location */}
+                          <td className="p-3.5 text-[var(--color-text-secondary)]">
+                            {prop.city}, {prop.locality || prop.state}
+                          </td>
+
+                          {/* Status */}
+                          <td className="p-3.5">
+                            <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-[2px] text-[10px]">
+                              {prop.availability || prop.status || 'RERA Ready'}
+                            </span>
+                          </td>
+
+                          {/* Action Buttons */}
+                          <td className="p-3.5 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {/* Toggle Featured */}
+                              <button
+                                onClick={() => handleToggleFeatured(prop)}
+                                title={prop.featured ? 'Unfeature property' : 'Mark as featured property'}
+                                className={`p-1.5 rounded-[2px] border transition-colors cursor-pointer ${
+                                  prop.featured
+                                    ? 'bg-amber-500/20 border-amber-500/40 text-amber-400'
+                                    : 'bg-[var(--color-bg-primary)] border-[var(--color-border-stone)] text-[var(--color-concrete-light)] hover:text-amber-400'
+                                }`}
+                              >
+                                <Sparkles className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* Edit Button */}
+                              <button
+                                onClick={() => handleOpenEditModal(prop)}
+                                title="Edit property specifications"
+                                className="p-1.5 bg-[var(--color-bg-primary)] border border-[var(--color-border-stone)] hover:border-[var(--color-earth-accent-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-earth-accent)] rounded-[2px] transition-colors cursor-pointer"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* Delete Button */}
+                              <button
+                                onClick={() => setDeletingId(prop.id)}
+                                title="Delete property listing"
+                                className="p-1.5 bg-[var(--color-bg-primary)] border border-[var(--color-border-stone)] hover:border-rose-500/40 text-[var(--color-text-secondary)] hover:text-rose-400 rounded-[2px] transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* LOCKED PASSCODE VIEW */
+          <div className="p-8 sm:p-12 text-center my-auto max-w-md mx-auto space-y-6">
+            <div className="w-16 h-16 mx-auto rounded-full bg-[var(--color-bg-tertiary)] border border-[var(--color-earth-accent-border)] flex items-center justify-center text-[var(--color-earth-accent)] shadow-xl">
+              <Lock className="w-8 h-8" />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-heading text-xl font-extrabold text-[var(--color-text-primary)] uppercase">
+                Administrator Authentication
+              </h3>
+              <p className="font-mono text-xs text-[var(--color-text-secondary)]">
+                Enter your administrative PIN to access live property management and real-time inventory editing.
+              </p>
+            </div>
+
+            <form onSubmit={handleUnlockPin} className="space-y-4 font-mono text-xs">
+              <div>
+                <input
+                  type="password"
+                  value={pinInput}
+                  onChange={(e) => {
+                    setPinInput(e.target.value);
+                    if (pinError) setPinError(false);
+                  }}
+                  placeholder="Enter Admin Password"
+                  className="w-full px-4 py-3 bg-[var(--color-bg-primary)] border border-[var(--color-border-stone)] text-center text-base text-[var(--color-text-primary)] rounded-[2px] tracking-wider focus:border-[var(--color-earth-accent)] outline-none"
+                  autoFocus
+                />
+                {pinError && (
+                  <p className="text-rose-400 text-[11px] mt-2 font-medium">
+                    Invalid Admin Password. Please enter the correct password to authenticate.
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3.5 bg-[var(--color-earth-accent)] hover:bg-[var(--color-earth-accent)]/90 text-white font-bold rounded-[2px] shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
+              >
+                <Unlock className="w-4 h-4" />
+                <span>AUTHENTICATE & LOG IN</span>
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Footer info bar */}
+        <div className="p-3 bg-[var(--color-bg-tertiary)] border-t border-[var(--color-border-stone)] flex items-center justify-between font-mono text-[10px] text-[var(--color-concrete-light)] shrink-0">
+          <span>KEDAR PROPERTY // RERA REAL ESTATE CONGLOMERATE</span>
+          <span>PERSISTENCE: LOCAL STORAGE ENABLED</span>
+        </div>
+      </div>
+
+      {/* Add / Edit Modal Component */}
+      <AdminPropertyModal
+        isOpen={isModalOpen}
+        propertyToEdit={editingProperty}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveProperty}
+      />
+
+      {/* Delete Confirmation Modal */}
+      {deletingId && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-[var(--color-bg-secondary)] border border-rose-500/40 p-6 rounded-lg max-w-sm w-full space-y-4 shadow-2xl font-mono">
+            <h4 className="font-heading text-lg font-bold text-rose-400 uppercase">
+              Confirm Property Deletion
+            </h4>
+            <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+              Are you sure you want to permanently delete this property listing from the website database?
+            </p>
+            <div className="flex items-center justify-end gap-3 pt-2 text-xs">
+              <button
+                onClick={() => setDeletingId(null)}
+                className="px-4 py-2 bg-[var(--color-bg-primary)] border border-[var(--color-border-stone)] text-[var(--color-text-secondary)] rounded-[2px]"
+              >
+                CANCEL
+              </button>
+              <button
+                onClick={() => handleDeleteProperty(deletingId)}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-[2px]"
+              >
+                DELETE LISTING
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AdminSection;

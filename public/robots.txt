@@ -1,0 +1,6 @@
+# Kedar Properties Production Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap Location
+Sitemap: https://www.kedarproperties.in/sitemap.xml
