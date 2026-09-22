@@ -141,19 +141,62 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
     }
   };
 
+  const compressImageDataUrl = (
+    dataUrl: string,
+    maxWidth = 1200,
+    maxHeight = 1200,
+    quality = 0.8
+  ): Promise<string> => {
+    return new Promise((resolve) => {
+      if (!dataUrl.startsWith('data:image/') || dataUrl.length < 50000) {
+        resolve(dataUrl);
+        return;
+      }
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth || height > maxHeight) {
+          if (width / height > maxWidth / maxHeight) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        } else {
+          resolve(dataUrl);
+        }
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  };
+
   // Upload Featured Main Photo
   const handleFeaturedFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const result = event.target?.result as string;
       if (result) {
-        setFeaturedImageSrc(result);
-        if (!galleryImages.includes(result)) {
-          setGalleryImages((prev) => [result, ...prev]);
-        }
+        const compressed = await compressImageDataUrl(result);
+        setFeaturedImageSrc(compressed);
+        setGalleryImages((prev) => {
+          if (prev.includes(compressed)) return prev;
+          return [compressed, ...prev];
+        });
       }
     };
     reader.readAsDataURL(file);
@@ -166,15 +209,16 @@ export const AdminPropertyModal: React.FC<AdminPropertyModalProps> = ({
 
     Array.from(files).forEach((file) => {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         const result = event.target?.result as string;
         if (result) {
+          const compressed = await compressImageDataUrl(result);
           setGalleryImages((prev) => {
-            if (prev.includes(result)) return prev;
-            return [...prev, result];
+            if (prev.includes(compressed)) return prev;
+            return [...prev, compressed];
           });
           if (!featuredImageSrc) {
-            setFeaturedImageSrc(result);
+            setFeaturedImageSrc(compressed);
           }
         }
       };

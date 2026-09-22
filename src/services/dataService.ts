@@ -12,32 +12,48 @@ import { CONSTRUCTION_STAGES_DATA } from '../data/constructionStages';
 
 const STORAGE_KEY_PROPERTIES = 'kedar_properties_data_v1';
 
+let cachedProperties: Property[] | null = null;
+
 // Helper to get local stored properties or fallback to initial data
 const loadStoredProperties = (): Property[] => {
-  if (typeof window === 'undefined') return [...PROPERTIES_DATA];
+  if (cachedProperties !== null) {
+    return cachedProperties;
+  }
+  if (typeof window === 'undefined') {
+    cachedProperties = [...PROPERTIES_DATA];
+    return cachedProperties;
+  }
   try {
     const raw = localStorage.getItem(STORAGE_KEY_PROPERTIES);
-    if (!raw) {
+    if (raw === null) {
       localStorage.setItem(STORAGE_KEY_PROPERTIES, JSON.stringify(PROPERTIES_DATA));
-      return [...PROPERTIES_DATA];
+      cachedProperties = [...PROPERTIES_DATA];
+      return cachedProperties;
     }
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : [...PROPERTIES_DATA];
+    if (Array.isArray(parsed)) {
+      cachedProperties = parsed;
+      return cachedProperties;
+    }
+    cachedProperties = [...PROPERTIES_DATA];
+    return cachedProperties;
   } catch (err) {
     console.error('Failed to parse properties from localStorage:', err);
-    return [...PROPERTIES_DATA];
+    cachedProperties = [...PROPERTIES_DATA];
+    return cachedProperties;
   }
 };
 
 const saveStoredProperties = (properties: Property[]): void => {
+  cachedProperties = properties;
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(STORAGE_KEY_PROPERTIES, JSON.stringify(properties));
-    // Dispatch custom event to notify listening UI components in real time
-    window.dispatchEvent(new Event('kedar_properties_updated'));
   } catch (err) {
     console.error('Failed to save properties to localStorage:', err);
   }
+  // Dispatch custom event to notify listening UI components in real time
+  window.dispatchEvent(new Event('kedar_properties_updated'));
 };
 
 /**
