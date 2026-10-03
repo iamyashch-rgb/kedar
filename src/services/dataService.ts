@@ -93,7 +93,7 @@ export const dataService = {
     if (isSupabaseConfigured && supabase) {
       return {
         mode: 'SUPABASE',
-        endpointUrl: import.meta.env.NEXT_PUBLIC_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || 'Configured',
+        endpointUrl: import.meta.env.NEXT_PUBLIC_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || 'https://pnyqgsufporxhshmbdnv.supabase.co',
         isConfigured: true,
       };
     }
