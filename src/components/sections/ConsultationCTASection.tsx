@@ -27,21 +27,11 @@ export interface FormErrors {
   email?: string;
 }
 
-// API-Ready submission function (ready to connect to REST backend)
-export const submitContactEnquiry = async (data: ContactFormData): Promise<{ success: boolean; refId: string }> => {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1200));
+import { dataService } from '../../services/dataService';
 
-  if (import.meta.env.DEV) {
-    console.log('[API Payload Submitted]:', JSON.stringify(data, null, 2));
-  }
-
-  // Generate mock CAD reference code
-  const randomNum = Math.floor(1000 + Math.random() * 9000);
-  return {
-    success: true,
-    refId: `KEDAR-ENQ-${randomNum}`,
-  };
+// API-Ready submission function (connected to Supabase backend & local fallback)
+const submitContactEnquiry = async (data: ContactFormData): Promise<{ success: boolean; refId: string }> => {
+  return await dataService.submitEnquiry(data);
 };
 
 export const ConsultationCTASection: React.FC = () => {
